@@ -2,6 +2,10 @@
 
 A production-ready registration management system built with Next.js 15, Prisma, SQLite, and TypeScript.
 
+
+![screenshot](image.png)
+
+
 ## Features
 
 - Role-based authentication (Admin / Operator)
