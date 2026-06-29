@@ -3,19 +3,12 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
 FROM base AS deps
-#ENV HTTPS_PROXY=http://192.168.100.89:2080
-ENV HTTP_PROXY=http://192.168.100.89:2080 \
-    HTTPS_PROXY=http://192.168.100.89:2080 \
-    NO_PROXY=localhost,172.0.0.0/8
 COPY package.json package-lock.json* ./
 RUN npm install --verbose
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV HTTP_PROXY=http://192.168.100.89:2080 \
-    HTTPS_PROXY=http://192.168.100.89:2080 \
-    NO_PROXY=localhost,172.0.0.0/8
 RUN npx prisma generate && npm run build
 
 FROM base AS runner

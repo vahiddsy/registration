@@ -55,16 +55,16 @@ export default function ForcePasswordChangePage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-8 shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-white dark:bg-slate-950 p-6">
+      <form onSubmit={onSubmit} className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-8 shadow-2xl">
         <h1 className="mb-2 text-2xl font-semibold">Change Your Password</h1>
-        <p className="mb-6 text-sm text-slate-400">This is a temporary password. Please set a new one.</p>
+        <p className="mb-6 text-sm text-slate-500 dark:text-slate-400">This is a temporary password. Please set a new one.</p>
 
         <label className="mb-4 block text-sm">
           New Password
           <input
             type="password"
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+            className="mt-1 w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             minLength={8}
@@ -76,7 +76,7 @@ export default function ForcePasswordChangePage() {
           Confirm Password
           <input
             type="password"
-            className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+            className="mt-1 w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             minLength={8}

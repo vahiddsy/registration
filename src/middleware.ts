@@ -10,8 +10,7 @@ export async function middleware(req: NextRequest) {
     pathname === '/api/seed' ||
     pathname === '/login' ||
     pathname === '/register' ||
-    pathname === '/api/health' ||
-    pathname === '/force-password-change'
+    pathname === '/api/health'
   ) {
     return NextResponse.next();
   }
@@ -19,10 +18,6 @@ export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET });
   if (!token) {
     return NextResponse.redirect(new URL('/login', req.url));
-  }
-
-  if (token.forcePasswordChange) {
-    return NextResponse.redirect(new URL('/force-password-change', req.url));
   }
 
   const role = token.role as string | undefined;

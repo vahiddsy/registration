@@ -19,6 +19,10 @@ export async function listRegistrations() {
   return prisma.registration.findMany({ include: { operator: true }, orderBy: { createdAt: 'desc' } });
 }
 
+export async function deleteRegistration(id: string) {
+  return prisma.registration.delete({ where: { id } });
+}
+
 export async function searchRegistrations(query: string, operatorId?: string) {
   return prisma.registration.findMany({
     where: {

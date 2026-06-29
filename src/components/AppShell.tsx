@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
 
 interface SessionUser {
   id: string;
@@ -36,7 +37,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-slate-950">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
       </div>
     );
@@ -55,14 +56,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-950">
+    <div className="flex min-h-screen bg-white dark:bg-slate-950">
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 transform border-r border-slate-800 bg-slate-900 transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 transform border-r border-gray-200 bg-gray-50 transition-transform duration-200 ease-in-out dark:border-slate-800 dark:bg-slate-900 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:relative lg:translate-x-0`}
       >
-        <div className="flex h-16 items-center border-b border-slate-800 px-6">
-          <Link href="/dashboard" className="text-lg font-semibold text-white">
+        <div className="flex h-16 items-center border-b border-gray-200 px-6 dark:border-slate-800">
+          <Link href="/dashboard" className="text-lg font-semibold text-slate-900 dark:text-white">
             RMS
           </Link>
         </div>
@@ -76,7 +77,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                   className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
                     pathname.startsWith(link.href)
                       ? 'bg-indigo-600 text-white'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      : 'text-slate-500 hover:bg-gray-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -85,14 +86,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             ))}
           </ul>
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 border-t border-slate-800 p-4">
-          <div className="mb-3 text-sm text-slate-400">
-            <p className="font-medium text-white">{user.fullname}</p>
-            <p className="text-xs">{user.role}</p>
+        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-200 p-4 dark:border-slate-800">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-sm text-slate-500 dark:text-slate-400">
+              <p className="font-medium text-slate-900 dark:text-white">{user.fullname}</p>
+              <p className="text-xs">{user.role}</p>
+            </div>
+            <ThemeToggle />
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
-            className="w-full rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 transition-colors hover:bg-red-900 hover:text-white"
+            className="w-full rounded-lg bg-gray-200 px-4 py-2 text-sm text-slate-600 transition-colors hover:bg-red-100 hover:text-red-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-red-900 dark:hover:text-white"
           >
             Logout
           </button>
@@ -100,16 +104,16 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="flex h-16 items-center border-b border-slate-800 bg-slate-900 px-4 lg:hidden">
+        <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 dark:border-slate-800 dark:bg-slate-900 lg:hidden">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white"
+            className="rounded-lg p-2 text-slate-500 hover:bg-gray-200 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
-          <span className="ml-3 text-lg font-semibold text-white">RMS</span>
+          <span className="ml-3 text-lg font-semibold text-slate-900 dark:text-white">RMS</span>
         </header>
         <main className="flex-1">{children}</main>
       </div>

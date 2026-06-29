@@ -35,7 +35,7 @@ describe('middleware', () => {
   });
 
   it('allows public routes without token', async () => {
-    const publicRoutes = ['/login', '/api/auth/session', '/api/health', '/api/seed', '/force-password-change'];
+    const publicRoutes = ['/login', '/api/auth/session', '/api/health', '/api/seed'];
 
     for (const route of publicRoutes) {
       const response = await runMiddleware(makeRequest(route));
@@ -49,13 +49,6 @@ describe('middleware', () => {
     const response = await runMiddleware(makeRequest('/dashboard'));
     expect(response?.status).toBe(307);
     expect(response?.headers.get('location')).toBe('http://localhost:3000/login');
-  });
-
-  it('redirects to force-password-change when token has forcePasswordChange', async () => {
-    (getToken as ReturnType<typeof vi.fn>).mockResolvedValue(mockToken({ forcePasswordChange: true }));
-    const response = await runMiddleware(makeRequest('/dashboard'));
-    expect(response?.status).toBe(307);
-    expect(response?.headers.get('location')).toBe('http://localhost:3000/force-password-change');
   });
 
   it('redirects non-admin away from admin routes', async () => {

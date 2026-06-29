@@ -1,4 +1,4 @@
-import { createRegistration, findRegistrationByNationalId, listRegistrations, listRegistrationsForOperator, searchRegistrations } from '@/repositories/registration-repository';
+import { createRegistration, deleteRegistration, findRegistrationByNationalId, listRegistrations, listRegistrationsForOperator, searchRegistrations } from '@/repositories/registration-repository';
 import { registrationFormSchema } from '@/validation/registration';
 
 type RegistrationWithOperator = Awaited<ReturnType<typeof findRegistrationByNationalId>>;
@@ -30,6 +30,10 @@ export async function getRegistrationsForOperator(operatorId: string) {
 
 export async function getAllRegistrations() {
   return listRegistrations();
+}
+
+export async function removeRegistration(id: string) {
+  return deleteRegistration(id);
 }
 
 export async function searchRegistrationData(query: string, options?: { role?: string; operatorId?: string }) {

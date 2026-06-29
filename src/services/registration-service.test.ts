@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getAllRegistrations, getRegistrationsForOperator, registerPerson, searchRegistrationData } from './registration-service';
+import { getAllRegistrations, getRegistrationsForOperator, registerPerson, removeRegistration, searchRegistrationData } from './registration-service';
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
@@ -7,6 +7,7 @@ vi.mock('@/lib/prisma', () => ({
       findUnique: vi.fn(),
       create: vi.fn(),
       findMany: vi.fn(),
+      delete: vi.fn(),
     },
   },
 }));
@@ -17,11 +18,13 @@ describe('registration service', () => {
   const findUnique = prisma.registration.findUnique as unknown as ReturnType<typeof vi.fn>;
   const create = prisma.registration.create as unknown as ReturnType<typeof vi.fn>;
   const findMany = prisma.registration.findMany as unknown as ReturnType<typeof vi.fn>;
+  const delete_ = prisma.registration.delete as unknown as ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     (findUnique as any).mockReset();
     (create as any).mockReset();
     (findMany as any).mockReset();
+    (delete_ as any).mockReset();
   });
 
   it('rejects invalid registration data', async () => {
@@ -75,6 +78,13 @@ describe('registration service', () => {
       include: { operator: true },
       orderBy: { createdAt: 'desc' },
     });
+  });
+
+  it('removes a registration by id', async () => {
+    (delete_ as any).mockResolvedValue({ id: 'reg-1' });
+    const result = await removeRegistration('reg-1');
+    expect(result).toEqual({ id: 'reg-1' });
+    expect(delete_).toHaveBeenCalledWith({ where: { id: 'reg-1' } });
   });
 
   it('does not scope searches for admins', async () => {

@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   const isAdmin = session.user.role === 'ADMIN';
 
   return (
-    <main className="min-h-screen bg-slate-950 p-6 text-slate-100">
+    <main className="min-h-screen bg-white dark:bg-slate-950 p-6 text-slate-900 dark:text-slate-100">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Dashboard</h1>
@@ -51,20 +51,20 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <p className="text-sm text-slate-400">Total Registrations</p>
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Total Registrations</p>
             <p className="mt-1 text-3xl font-semibold">{totalRegistrations}</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <p className="text-sm text-slate-400">Today&apos;s Registrations</p>
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Today&apos;s Registrations</p>
             <p className="mt-1 text-3xl font-semibold">{todayRegistrations}</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <p className="text-sm text-slate-400">Active Operators</p>
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Active Operators</p>
             <p className="mt-1 text-3xl font-semibold">{operatorsCount}</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
-            <p className="text-sm text-slate-400">Registrations / Operator</p>
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Registrations / Operator</p>
             <p className="mt-1 text-3xl font-semibold">
               {operatorsCount > 0 ? (totalRegistrations / operatorsCount).toFixed(1) : '0'}
             </p>
@@ -72,17 +72,17 @@ export default async function DashboardPage() {
         </div>
 
         <div className="mb-8 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
             <h2 className="mb-4 text-lg font-semibold">Registrations per Operator</h2>
             {operatorStats.length === 0 ? (
-              <p className="py-4 text-center text-sm text-slate-500">No operators yet</p>
+              <p className="py-4 text-center text-sm text-slate-400 dark:text-slate-500">No operators yet</p>
             ) : (
               <div className="space-y-3">
                 {operatorStats.map((op) => (
                   <div key={op.id} className="flex items-center justify-between">
-                    <span className="text-sm text-slate-300">{op.fullname}</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">{op.fullname}</span>
                     <div className="flex items-center gap-2">
-                      <div className="h-2 w-32 overflow-hidden rounded-full bg-slate-800 sm:w-48">
+                      <div className="h-2 w-32 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-800 sm:w-48">
                         <div
                           className="h-full rounded-full bg-indigo-600 transition-all"
                           style={{
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
                           }}
                         />
                       </div>
-                      <span className="text-sm font-medium text-slate-400">{op._count.registrations}</span>
+                      <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{op._count.registrations}</span>
                     </div>
                   </div>
                 ))}
@@ -98,18 +98,18 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+          <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-4">
             <h2 className="mb-4 text-lg font-semibold">Latest Registrations</h2>
             {latestRegistrations.length === 0 ? (
-              <p className="py-4 text-center text-sm text-slate-500">No registrations yet</p>
+              <p className="py-4 text-center text-sm text-slate-400 dark:text-slate-500">No registrations yet</p>
             ) : (
               <ul className="space-y-2">
                 {latestRegistrations.map((r) => (
-                  <li key={r.id} className="rounded-lg border border-slate-800 p-3 text-sm">
-                    <span className="font-medium text-white">{r.firstName} {r.lastName}</span>
-                    <span className="ml-2 font-mono text-slate-500">{r.nationalId}</span>
-                    <span className="ml-2 text-slate-500">— {r.operator.fullname}</span>
-                    <span className="ml-2 text-xs text-slate-600">{new Date(r.createdAt).toLocaleDateString()}</span>
+                  <li key={r.id} className="rounded-lg border border-gray-200 dark:border-slate-800 p-3 text-sm">
+                    <span className="font-medium text-slate-900 dark:text-white">{r.firstName} {r.lastName}</span>
+                    <span className="ml-2 font-mono text-slate-400 dark:text-slate-500">{r.nationalId}</span>
+                    <span className="ml-2 text-slate-400 dark:text-slate-500">— {r.operator.fullname}</span>
+                    <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">{new Date(r.createdAt).toLocaleDateString()}</span>
                   </li>
                 ))}
               </ul>

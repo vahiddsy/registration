@@ -22,14 +22,14 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-8 shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-white dark:bg-slate-950 p-6">
+      <form onSubmit={onSubmit} className="w-full max-w-md rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-8 shadow-2xl">
         <h1 className="mb-6 text-2xl font-semibold">Sign in</h1>
         <label className="mb-4 block text-sm">Username
-          <input className="mt-1 w-full rounded border border-slate-700 bg-slate-800 p-2" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input className="mt-1 w-full rounded border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2" value={username} onChange={(e) => setUsername(e.target.value)} />
         </label>
         <label className="mb-4 block text-sm">Password
-          <input type="password" className="mt-1 w-full rounded border border-slate-700 bg-slate-800 p-2" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" className="mt-1 w-full rounded border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
         <button className="w-full rounded bg-indigo-600 px-4 py-2 font-medium text-white">Login</button>
       </form>

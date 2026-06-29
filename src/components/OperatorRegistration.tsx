@@ -116,7 +116,7 @@ export default function OperatorRegistration({ onSuccess }: Props) {
 
   return (
     <div className="space-y-6" dir="rtl">
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+      <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-6">
         <div className="mb-4 flex items-center gap-3 text-lg font-semibold">
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-sm text-white">۱</span>
           <span>بررسی شماره ملی</span>
@@ -142,7 +142,7 @@ export default function OperatorRegistration({ onSuccess }: Props) {
               }}
               onKeyDown={handleKeyDown}
               placeholder="شماره ملی"
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-right text-white placeholder-slate-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-right text-white placeholder-gray-400 dark:placeholder-slate-500"
               dir="rtl"
             />
             {checkError && (
@@ -168,12 +168,12 @@ export default function OperatorRegistration({ onSuccess }: Props) {
 
       {step === 2 && (
         <div
-          className={`rounded-xl border border-slate-800 bg-slate-900 p-6 transition-all duration-300 ${
+          className={`rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 p-6 transition-all duration-300 ${
             animateStep2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           <div className="mb-4 flex items-center gap-3 text-lg font-semibold">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700 text-sm text-slate-300">۲</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 dark:bg-slate-700 text-sm text-slate-300">۲</span>
             <span>ثبت اطلاعات (اختیاری)</span>
           </div>
 
@@ -186,7 +186,7 @@ export default function OperatorRegistration({ onSuccess }: Props) {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="نام"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-right text-white placeholder-slate-500"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-right text-white placeholder-gray-400 dark:placeholder-slate-500"
                   dir="rtl"
                 />
               </div>
@@ -196,7 +196,7 @@ export default function OperatorRegistration({ onSuccess }: Props) {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="نام خانوادگی"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-right text-white placeholder-slate-500"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-right text-white placeholder-gray-400 dark:placeholder-slate-500"
                   dir="rtl"
                 />
               </div>
@@ -223,32 +223,32 @@ export default function OperatorRegistration({ onSuccess }: Props) {
       {showModal && modalData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div
-            className="w-full max-w-md rounded-xl border border-slate-700 bg-slate-900 p-6 shadow-2xl"
+            className="w-full max-w-md rounded-xl border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 p-6 shadow-2xl"
             dir="rtl"
           >
-            <h3 className="mb-4 text-lg font-semibold text-white text-center">
+            <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white text-center">
               این شماره ملی قبلاً ثبت شده است
             </h3>
             <div className="mb-6 space-y-3 text-sm">
-              <div className="flex justify-between rounded-lg bg-slate-800 p-3">
+              <div className="flex justify-between rounded-lg bg-gray-100 dark:bg-slate-800 p-3">
                 <span className="text-slate-400">شماره ملی</span>
-                <span className="font-mono text-white" dir="ltr">{modalData.nationalId}</span>
+                <span className="font-mono text-slate-900 dark:text-white" dir="ltr">{modalData.nationalId}</span>
               </div>
-              <div className="flex justify-between rounded-lg bg-slate-800 p-3">
+              <div className="flex justify-between rounded-lg bg-gray-100 dark:bg-slate-800 p-3">
                 <span className="text-slate-400">نام</span>
-                <span className="text-white">{modalData.firstName || '—'}</span>
+                <span className="text-slate-900 dark:text-white">{modalData.firstName || '—'}</span>
               </div>
-              <div className="flex justify-between rounded-lg bg-slate-800 p-3">
+              <div className="flex justify-between rounded-lg bg-gray-100 dark:bg-slate-800 p-3">
                 <span className="text-slate-400">نام خانوادگی</span>
-                <span className="text-white">{modalData.lastName || '—'}</span>
+                <span className="text-slate-900 dark:text-white">{modalData.lastName || '—'}</span>
               </div>
-              <div className="flex justify-between rounded-lg bg-slate-800 p-3">
+              <div className="flex justify-between rounded-lg bg-gray-100 dark:bg-slate-800 p-3">
                 <span className="text-slate-400">اپراتور ثبت‌کننده</span>
-                <span className="text-white">{modalData.operatorName}</span>
+                <span className="text-slate-900 dark:text-white">{modalData.operatorName}</span>
               </div>
-              <div className="flex justify-between rounded-lg bg-slate-800 p-3">
+              <div className="flex justify-between rounded-lg bg-gray-100 dark:bg-slate-800 p-3">
                 <span className="text-slate-400">تاریخ ثبت</span>
-                <span className="text-white">{new Date(modalData.createdAt).toLocaleDateString('fa-IR')}</span>
+                <span className="text-slate-900 dark:text-white">{new Date(modalData.createdAt).toLocaleDateString('fa-IR')}</span>
               </div>
             </div>
             <button

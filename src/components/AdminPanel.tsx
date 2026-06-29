@@ -4,6 +4,15 @@ import { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import ConfirmDialog from './ConfirmDialog';
 
+interface RegistrationItem {
+  id: string;
+  firstName: string;
+  lastName: string;
+  nationalId: string;
+  operator: { fullname: string } | null;
+  createdAt: string;
+}
+
 interface AdminUser {
   id: string;
   fullname: string;
@@ -38,6 +47,39 @@ export default function AdminPanel() {
   const [confirmResetPassword, setConfirmResetPassword] = useState<string | null>(null);
   const [resetPasswordValue, setResetPasswordValue] = useState('');
 
+  const [registrations, setRegistrations] = useState<RegistrationItem[]>([]);
+  const [registrationsLoading, setRegistrationsLoading] = useState(true);
+  const [confirmDeleteReg, setConfirmDeleteReg] = useState<string | null>(null);
+
+  const loadRegistrations = useCallback(async () => {
+    try {
+      const res = await fetch('/api/registrations');
+      if (res.ok) setRegistrations(await res.json());
+    } catch {
+      toast.error('Failed to load registrations');
+    } finally {
+      setRegistrationsLoading(false);
+    }
+  }, []);
+
+  async function handleDeleteRegistration(id: string) {
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/registrations/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Registration deleted');
+        loadRegistrations();
+      } else {
+        const data = await res.json();
+        toast.error(data.error ?? 'Failed to delete registration');
+      }
+    } catch {
+      toast.error('Failed to delete registration');
+    }
+    setSubmitting(false);
+    setConfirmDeleteReg(null);
+  }
+
   const loadUsers = useCallback(async () => {
     try {
       const res = await fetch('/api/users');
@@ -51,7 +93,8 @@ export default function AdminPanel() {
 
   useEffect(() => {
     loadUsers();
-  }, [loadUsers]);
+    loadRegistrations();
+  }, [loadUsers, loadRegistrations]);
 
   function openCreate() {
     setEditingId(null);
@@ -202,24 +245,24 @@ export default function AdminPanel() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-slate-800">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800">
         <table className="w-full text-left text-sm">
-          <thead className="border-b border-slate-800 bg-slate-900">
+          <thead className="border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900">
             <tr>
-              <th className="px-4 py-3 font-medium text-slate-400">Full Name</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Username</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Role</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Status</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Created</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Last Login</th>
-              <th className="px-4 py-3 font-medium text-slate-400">Actions</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Full Name</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Username</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Role</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Status</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Created</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Last Login</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-slate-900/50">
+              <tr key={user.id} className="hover:bg-gray-100/50 dark:hover:bg-slate-900/50">
                 <td className="px-4 py-3">{user.fullname}</td>
-                <td className="px-4 py-3 text-slate-400">{user.username}</td>
+                <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{user.username}</td>
                 <td className="px-4 py-3">
                   <span className={`rounded-full px-2 py-0.5 text-xs ${user.role === 'ADMIN' ? 'bg-purple-900 text-purple-200' : 'bg-blue-900 text-blue-200'}`}>
                     {user.role}
@@ -230,11 +273,11 @@ export default function AdminPanel() {
                     {user.active ? 'Active' : 'Disabled'}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-slate-400">{new Date(user.createdAt).toLocaleDateString()}</td>
-                <td className="px-4 py-3 text-slate-400">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</td>
+                <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{new Date(user.createdAt).toLocaleDateString()}</td>
+                <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}</td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
-                    <button onClick={() => openEdit(user)} className="rounded bg-slate-800 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700">
+                    <button onClick={() => openEdit(user)} className="rounded bg-gray-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700">
                       Edit
                     </button>
                     <button
@@ -245,7 +288,7 @@ export default function AdminPanel() {
                     </button>
                     <button
                       onClick={() => { setConfirmResetPassword(user.id); setResetPasswordValue(''); }}
-                      className="rounded bg-slate-800 px-2 py-1 text-xs text-slate-300 hover:bg-slate-700"
+                      className="rounded bg-gray-100 dark:bg-slate-800 px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
                     >
                       Reset PW
                     </button>
@@ -264,36 +307,91 @@ export default function AdminPanel() {
         </table>
       </div>
 
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-slate-800">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900">
+            <tr>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">First Name</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Last Name</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">National ID</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Operator</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Date</th>
+              <th className="px-4 py-3 font-medium text-slate-500 dark:text-slate-400">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800">
+            {registrationsLoading ? (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">Loading...</td>
+              </tr>
+            ) : registrations.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">No registrations</td>
+              </tr>
+            ) : (
+              registrations.map((r) => (
+                <tr key={r.id} className="hover:bg-gray-100/50 dark:hover:bg-slate-900/50">
+                  <td className="px-4 py-3">{r.firstName || '—'}</td>
+                  <td className="px-4 py-3">{r.lastName || '—'}</td>
+                  <td className="px-4 py-3 font-mono text-slate-500 dark:text-slate-400">{r.nationalId}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{r.operator?.fullname ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-500 dark:text-slate-400">{new Date(r.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => setConfirmDeleteReg(r.id)}
+                      className="rounded bg-red-900 px-2 py-1 text-xs text-red-200 hover:bg-red-800"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <ConfirmDialog
+        open={confirmDeleteReg !== null}
+        title="Delete Registration"
+        message="Are you sure you want to delete this registration? This action cannot be undone."
+        variant="danger"
+        confirmLabel="Delete"
+        loading={submitting}
+        onConfirm={() => confirmDeleteReg && handleDeleteRegistration(confirmDeleteReg)}
+        onCancel={() => setConfirmDeleteReg(null)}
+      />
+
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="mb-4 text-lg font-semibold text-white">{editingId ? 'Edit Operator' : 'Add Operator'}</h3>
+          <div className="w-full max-w-md rounded-xl border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 p-6 shadow-2xl">
+            <h3 className="mb-4 text-lg font-semibold text-slate-900 dark:text-white">{editingId ? 'Edit Operator' : 'Add Operator'}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm text-slate-400">Full Name</label>
+                <label className="mb-1 block text-sm text-slate-500 dark:text-slate-400">Full Name</label>
                 <input
                   required
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
                   value={form.fullname}
                   onChange={(e) => setForm({ ...form, fullname: e.target.value })}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-slate-400">Username</label>
+                <label className="mb-1 block text-sm text-slate-500 dark:text-slate-400">Username</label>
                 <input
                   required
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
                   value={form.username}
                   onChange={(e) => setForm({ ...form, username: e.target.value })}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-slate-400">
+                <label className="mb-1 block text-sm text-slate-500 dark:text-slate-400">
                   Password {editingId && <span className="text-slate-500">(leave blank to keep current)</span>}
                 </label>
                 <input
                   type="password"
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   required={!editingId}
@@ -301,9 +399,9 @@ export default function AdminPanel() {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm text-slate-400">Role</label>
+                <label className="mb-1 block text-sm text-slate-500 dark:text-slate-400">Role</label>
                 <select
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+                  className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                 >
@@ -318,16 +416,16 @@ export default function AdminPanel() {
                     id="activeToggle"
                     checked={form.active}
                     onChange={(e) => setForm({ ...form, active: e.target.checked })}
-                    className="rounded border-slate-700 bg-slate-800"
+                    className="rounded border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800"
                   />
-                  <label htmlFor="activeToggle" className="text-sm text-slate-400">Active</label>
+                  <label htmlFor="activeToggle" className="text-sm text-slate-500 dark:text-slate-400">Active</label>
                 </div>
               )}
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700"
+                  className="rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700"
                 >
                   Cancel
                 </button>
@@ -371,10 +469,10 @@ export default function AdminPanel() {
         title="Reset Password"
         message={
           <div>
-            <p className="mb-3 text-sm text-slate-400">Enter a new password for this user.</p>
+            <p className="mb-3 text-sm text-slate-500 dark:text-slate-400">Enter a new password for this user.</p>
             <input
               type="password"
-              className="w-full rounded-lg border border-slate-700 bg-slate-800 p-2 text-white"
+              className="w-full rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-100 dark:bg-slate-800 p-2 text-slate-900 dark:text-white"
               placeholder="New password (min 8 chars)"
               value={resetPasswordValue}
               onChange={(e) => setResetPasswordValue(e.target.value)}
