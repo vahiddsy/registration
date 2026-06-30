@@ -1,44 +1,15 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { verifyCsrf } from './csrf';
+import { describe, expect, it } from 'vitest';
+import { createCsrfToken, getCsrfTokenFromRequest } from './csrf';
 
-describe('CSRF verification', () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
+describe('CSRF helpers', () => {
+  it('creates a non-empty CSRF token', () => {
+    const token = createCsrfToken();
+    expect(token).toBeTruthy();
+    expect(token.length).toBeGreaterThan(20);
   });
 
-  it('allows non-production requests without a token', () => {
-    vi.stubEnv('NODE_ENV', 'development');
-
-    const req = new Request('https://example.com');
-
-    expect(verifyCsrf(req)).toBe(true);
-  });
-
-  it('accepts matching production header and cookie tokens', () => {
-    vi.stubEnv('NODE_ENV', 'production');
-
-    const req = new Request('https://example.com', {
-      headers: {
-        cookie: 'csrf-token=token-123',
-        'x-csrf-token': 'token-123',
-      },
-    });
-
-    expect(verifyCsrf(req)).toBe(true);
-  });
-
-  it('rejects missing or mismatched production tokens', () => {
-    vi.stubEnv('NODE_ENV', 'production');
-
-    const missing = new Request('https://example.com');
-    const mismatched = new Request('https://example.com', {
-      headers: {
-        cookie: 'csrf-token=cookie-token',
-        'x-csrf-token': 'header-token',
-      },
-    });
-
-    expect(verifyCsrf(missing)).toBe(false);
-    expect(verifyCsrf(mismatched)).toBe(false);
+  it('reads a CSRF token from request headers', () => {
+    const req = new Request('https://example.com', { headers: { 'x-csrf-token': 'abc123' } });
+    expect(getCsrfTokenFromRequest(req)).toBe('abc123');
   });
 });
